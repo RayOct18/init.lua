@@ -1,4 +1,5 @@
 
+vim.opt.clipboard = "unnamedplus"
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
@@ -24,8 +25,29 @@ end)
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- next greatest remap ever : asbjornHaland
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
+function is_macos()
+    local handle = io.popen("uname")
+    if (handle == nil)
+    then
+        return
+    end
+    local result = handle:read("*a")
+    handle:close()
+    return result:match("Darwin") ~= nil
+end
+
+function send_clipboard_to_mac()
+    if (is_macos() == true)
+    then
+        return
+    end
+    local clipboard_text = vim.fn.getreg("+")
+    local command = string.format("echo %s | ssh mac pbcopy", vim.fn.shellescape(clipboard_text))
+    os.execute(command)
+end
+
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y <cmd>lua send_clipboard_to_mac()<cr>")
+vim.keymap.set("n", "<leader>Y", "\"+Y <cmd>lua send_clipboard_to_mac()<cr>")
 
 vim.keymap.set({"n", "v"}, "<leader>d", "\"_d")
 
