@@ -7,12 +7,20 @@ return {
         "nvim-treesitter/nvim-treesitter",
         "fredrikaverpil/neotest-golang",
         "leoluz/nvim-dap-go",
+        "nvim-neotest/neotest-jest",
     },
     config = function()
         require("neotest").setup({
             adapters = {
                 require("neotest-golang")({
                     dap = { justMyCode = false },
+                }),
+                require('neotest-jest')({
+                    jestCommand = "pnpm test",
+                    jestConfigFile = 'package.json',
+                    cwd = function()
+                        return vim.fn.getcwd()
+                    end,
                 }),
             },
         })
@@ -50,6 +58,5 @@ return {
         vim.keymap.set("n", "<leader>ta", function()
             require("neotest").run.run(vim.fn.getcwd())
         end, { desc = "Debug: Open test output" })
-
     end
 }

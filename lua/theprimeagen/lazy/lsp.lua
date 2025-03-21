@@ -99,7 +99,14 @@ return {
         })
 
         vim.diagnostic.config({
-            -- update_in_insert = true,
+            virtual_text = {
+                prefix = "",  -- 如果不想要前綴符號
+                source = "always",  -- 顯示錯誤來源
+                spacing = 2,  -- 訊息與程式碼間的距離
+            },
+            signs = false,  -- 關閉符號
+            underline = true,  -- 啟用底線
+            update_in_insert = false,  -- 避免在插入模式更新
             float = {
                 focusable = false,
                 style = "minimal",

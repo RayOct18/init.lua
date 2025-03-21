@@ -25,7 +25,7 @@ end)
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- next greatest remap ever : asbjornHaland
-function is_macos()
+function isMacos()
     local handle = io.popen("uname")
     if (handle == nil)
     then
@@ -36,8 +36,8 @@ function is_macos()
     return result:match("Darwin") ~= nil
 end
 
-function send_clipboard_to_mac()
-    if (is_macos() == true)
+function sendClipboardToMac()
+    if (isMacos() == true)
     then
         return
     end
@@ -46,8 +46,15 @@ function send_clipboard_to_mac()
     os.execute(command)
 end
 
-vim.keymap.set({"n", "v"}, "<leader>y", "\"+y <cmd>lua send_clipboard_to_mac()<cr>")
-vim.keymap.set("n", "<leader>Y", "\"+Y <cmd>lua send_clipboard_to_mac()<cr>")
+function insertFullPath()
+  local filepath = vim.fn.expand('%')
+  vim.fn.setreg('+', filepath) -- write to clippoard
+end
+
+vim.keymap.set("n", "<leader>fp", "<cmd> lua insertFullPath() sendClipboardToMac()<cr>", { silent = true })
+
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y <cmd>lua sendClipboardToMac()<cr>")
+vim.keymap.set("n", "<leader>Y", "\"+Y <cmd>lua sendClipboardToMac()<cr>")
 
 vim.keymap.set({"n", "v"}, "<leader>d", "\"_d")
 
